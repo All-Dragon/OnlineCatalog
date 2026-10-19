@@ -1,0 +1,27 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Private study notes; keep outside the project history.
+docs/progress.md
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+npm-debug.log*
+
+# Editors and operating systems
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini

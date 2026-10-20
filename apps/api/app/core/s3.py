@@ -1,9 +1,14 @@
+import logging
+
 from boto3.session import Session as BotoSession
 from botocore.client import BaseClient
 from botocore.config import Config
 from botocore.exceptions import ClientError
 
 from app.core.config import Settings
+
+
+logger = logging.getLogger(__name__)
 
 
 def create_s3_client(settings: Settings) -> BaseClient:
@@ -42,5 +47,7 @@ def ensure_bucket(client: BaseClient, name: str) -> None:
             "BucketAlreadyExists",
         }:
             raise
+    else:
+        logger.info("Created S3 bucket: %s", name)
 
     client.head_bucket(Bucket=name)

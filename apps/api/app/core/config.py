@@ -1,4 +1,7 @@
-from pydantic import SecretStr
+from pathlib import Path
+from typing import Literal
+
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -16,6 +19,12 @@ class Settings(BaseSettings):
     s3_access_key: str
     s3_secret_key: SecretStr
     s3_region: str = "us-east-1"
+
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+    log_to_file: bool = True
+    log_dir: Path = Path("logs/api")
+    log_max_bytes: int = Field(default=10 * 1024 * 1024, gt=0)
+    log_max_files: int = Field(default=5, ge=2, le=5)
 
     model_config = SettingsConfigDict(
         env_file=".env",

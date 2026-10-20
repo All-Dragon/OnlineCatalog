@@ -11,8 +11,8 @@ __pycache__/
 .env.*
 !.env.example
 
-# Private study notes; keep outside the project history.
 docs/progress.md
+logs/
 
 # Node.js / Next.js
 node_modules/

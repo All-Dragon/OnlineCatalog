@@ -22,7 +22,10 @@ class Settings(BaseSettings):
 
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
     log_to_file: bool = True
-    log_dir: Path = Path("logs/api")
+    log_dir: Path = Field(
+        default=Path("logs/api"),
+        validation_alias="API_LOG_DIR",
+    )
     log_max_bytes: int = Field(default=10 * 1024 * 1024, gt=0)
     log_max_files: int = Field(default=5, ge=2, le=5)
 

@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     log_max_bytes: int = Field(default=10 * 1024 * 1024, gt=0)
     log_max_files: int = Field(default=5, ge=2, le=5)
 
+    api_service_token: SecretStr = Field(min_length=32)
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

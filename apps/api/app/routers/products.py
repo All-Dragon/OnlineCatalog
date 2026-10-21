@@ -1,10 +1,21 @@
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Path, Response, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Path,
+    Response,
+    UploadFile,
+)
 
-from app.api.dependencies import ProductServiceDep
+from app.api.dependencies import (
+    ProductCreateDep,
+    ProductServiceDep,
+    require_service_token,
+)
+from app.api.uploads import read_product_image
 from app.schemas.product import ProductRead
-from app.services.exceptions import ProductNotFoundError
 
 
 products_router = APIRouter(
@@ -25,15 +36,27 @@ async def get_product_image(
     product_id: Annotated[int, Path(gt=0)],
     service: ProductServiceDep,
 ) -> Response:
-    try:
-        image = await service.get_image(product_id)
-    except ProductNotFoundError as error:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Product not found",
-        ) from error
+    image = await service.get_image(product_id)
 
     return Response(
         content=image.data,
         media_type=image.content_type,
+    )
+
+
+@products_router.post(
+    "",
+    response_model=ProductRead,
+    dependencies=[Depends(require_service_token)],
+)
+async def create_product(
+    service: ProductServiceDep,
+    data: ProductCreateDep,
+    photo: Annotated[UploadFile, File()],
+) -> ProductRead:
+    image = await read_product_image(photo)
+
+    return await service.create_product(
+        data=data,
+        image=image,
     )

@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Literal
 
-from pydantic import AnyHttpUrl, Field, SecretStr
+from pydantic import AnyHttpUrl, Field, HttpUrl, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     )
     log_max_bytes: int = Field(default=10 * 1024 * 1024, gt=0)
     log_max_files: int = Field(default=5, ge=2, le=5)
+
+    mini_app_url: HttpUrl
 
     model_config = SettingsConfigDict(
         env_file=".env",

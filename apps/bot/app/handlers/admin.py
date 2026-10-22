@@ -2,14 +2,14 @@ import logging
 from io import BytesIO
 
 from aiogram import Bot, F, Router
+from aiogram.enums import ChatType
 from aiogram.filters import Command
 from aiogram.types import Message
-
 from httpx import HTTPStatusError
 
 from app.clients.catalog import CatalogClient
 from app.core.config import settings
-from app.keyboards.admin import CREATE_PRODUCT_TEXT
+from app.keyboards.catalog import CREATE_PRODUCT_TEXT, get_catalog_keyboard
 
 
 logger = logging.getLogger(__name__)
@@ -33,8 +33,18 @@ async def handle_create_command(message: Message) -> None:
             "Denied product creation command: user_id=%s",
             user.id,
         )
+
+        keyboard = None
+
+        if message.chat.type == ChatType.PRIVATE:
+            keyboard = get_catalog_keyboard(
+                mini_app_url=str(settings.mini_app_url),
+            )
+
         await message.answer(
-            "Создавать товары может только администратор."
+            "У меня есть товар.\n\n"
+            "Открой каталог, чтобы посмотреть товары.",
+            reply_markup=keyboard,
         )
         return
 
@@ -65,7 +75,18 @@ async def handle_product_photo(
             "Denied product photo: user_id=%s",
             user.id,
         )
-        await message.answer("У меня есть товар.")
+        keyboard = None
+
+        if message.chat.type == ChatType.PRIVATE:
+            keyboard = get_catalog_keyboard(
+                mini_app_url=str(settings.mini_app_url),
+            )
+
+        await message.answer(
+            "У меня есть товар.\n\n"
+            "Открой каталог, чтобы посмотреть товары.",
+            reply_markup=keyboard,
+        )
         return
 
     title = (message.caption or "").strip()

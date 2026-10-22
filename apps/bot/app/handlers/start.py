@@ -1,11 +1,12 @@
 import logging
 
 from aiogram import Router
+from aiogram.enums import ChatType
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
 from app.core.config import settings
-from app.keyboards.admin import get_admin_keyboard
+from app.keyboards.catalog import get_catalog_keyboard
 
 
 logger = logging.getLogger(__name__)
@@ -20,11 +21,16 @@ async def handle_start(message: Message) -> None:
 
     keyboard = None
 
-    if (
+    is_admin = (
         message.from_user is not None
         and message.from_user.id == settings.telegram_admin_id
-    ):
-        keyboard = get_admin_keyboard()
+    )
+
+    if message.chat.type == ChatType.PRIVATE:
+        keyboard = get_catalog_keyboard(
+            mini_app_url=str(settings.mini_app_url),
+            is_admin=is_admin,
+        )
 
     await message.answer(
         "У меня есть товар.\n\n"

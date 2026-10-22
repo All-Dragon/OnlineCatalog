@@ -13,6 +13,7 @@ __pycache__/
 
 docs/progress.md
 logs/
+/polka-design/
 
 # Node.js / Next.js
 node_modules/

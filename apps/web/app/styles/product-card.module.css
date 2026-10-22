@@ -1,0 +1,91 @@
+.card {
+  min-width: 0;
+}
+
+.link {
+  display: block;
+  border-radius: var(--radius);
+}
+
+.image {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1.05;
+  border-radius: var(--radius);
+  background: #edece6;
+}
+
+.image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 250ms ease;
+}
+
+.arrow {
+  position: absolute;
+  right: 13px;
+  bottom: 13px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ffffff96;
+  border-radius: 50%;
+  background: #ffffffd6;
+  color: var(--ink);
+  transition: background 200ms ease, color 200ms ease;
+}
+
+.arrow svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.title {
+  margin: 14px 0 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.link:hover .title {
+  color: var(--olive);
+}
+
+.link:hover .arrow,
+.link:focus-visible .arrow {
+  background: var(--olive);
+  color: var(--surface);
+}
+
+@media (hover: hover) {
+  .link:hover .image img {
+    transform: scale(1.04);
+  }
+}
+
+@media (max-width: 760px) {
+  .image {
+    aspect-ratio: 1;
+  }
+
+  .title {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image img,
+  .arrow {
+    transition: none;
+  }
+}

@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 import { apiBaseUrl } from "./app/lib/config";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+
   async rewrites() {
     return [
       {

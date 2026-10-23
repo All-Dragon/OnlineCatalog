@@ -34,51 +34,51 @@ class ImageRepository:
         self._bucket_name = bucket_name
 
     async def upload(
-            self,
-            key: str,
-            data: bytes,
-            content_type: str,
-        ) -> None:
-            try:
-                await to_thread(
-                    self._client.put_object,
-                    Bucket=self._bucket_name,
-                    Key=key,
-                    Body=data,
-                    ContentType=content_type,
-                )
-            except ClientError as error:
-                code = error.response.get("Error", {}).get("Code")
-                status_code = error.response.get(
-                    "ResponseMetadata", {}
-                ).get("HTTPStatusCode", 0)
-
-                if status_code >= 500 or status_code == 429 or code in {
-                    "SlowDown",
-                    "RequestTimeout",
-                }:
-                    raise StorageUnavailableError(
-                        "Image storage is temporarily unavailable"
-                    ) from error
-
-                raise StorageError("Failed to upload image") from error
-            except (
-                EndpointConnectionError,
-                ConnectTimeoutError,
-                HTTPClientError,
-            ) as error:
-                raise StorageUnavailableError(
-                    "Failed to upload image to storage"
-                ) from error
-            except BotoCoreError as error:
-                raise StorageError("Failed to upload image") from error
-
-            logger.debug(
-                "Uploaded image: bucket=%s key=%s size=%s",
-                self._bucket_name,
-                key,
-                len(data),
+        self,
+        key: str,
+        data: bytes,
+        content_type: str,
+    ) -> None:
+        try:
+            await to_thread(
+                self._client.put_object,
+                Bucket=self._bucket_name,
+                Key=key,
+                Body=data,
+                ContentType=content_type,
             )
+        except ClientError as error:
+            code = error.response.get("Error", {}).get("Code")
+            status_code = error.response.get(
+                "ResponseMetadata", {}
+            ).get("HTTPStatusCode", 0)
+
+            if status_code >= 500 or status_code == 429 or code in {
+                "SlowDown",
+                "RequestTimeout",
+            }:
+                raise StorageUnavailableError(
+                    "Image storage is temporarily unavailable"
+                ) from error
+
+            raise StorageError("Failed to upload image") from error
+        except (
+            EndpointConnectionError,
+            ConnectTimeoutError,
+            HTTPClientError,
+        ) as error:
+            raise StorageUnavailableError(
+                "Failed to upload image to storage"
+            ) from error
+        except BotoCoreError as error:
+            raise StorageError("Failed to upload image") from error
+
+        logger.debug(
+            "Uploaded image: bucket=%s key=%s size=%s",
+            self._bucket_name,
+            key,
+            len(data),
+        )
 
     async def download(self, key: str) -> ImageData:
         try:

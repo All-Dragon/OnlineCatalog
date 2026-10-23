@@ -9,26 +9,18 @@ type ProductCardProps = {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <article className={styles.card}>
-      <a className={styles.link} href={product.image_url}>
-        <div className={styles.image}>
-          <img
-            src={product.image_url}
-            alt={product.title}
-            width={800}
-            height={800}
-            loading="lazy"
-            decoding="async"
-          />
+      <div className={styles.image}>
+        <img
+          src={product.image_url}
+          alt={product.title}
+          width={800}
+          height={800}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
 
-          <span className={styles.arrow} aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M6 18 18 6M6 6h12v12" />
-            </svg>
-          </span>
-        </div>
-
-        <h2 className={styles.title}>{product.title}</h2>
-      </a>
+      <h2 className={styles.title}>{product.title}</h2>
     </article>
   );
 }

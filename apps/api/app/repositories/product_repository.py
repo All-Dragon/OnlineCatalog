@@ -46,9 +46,7 @@ class ProductRepository:
                 source_chat_id=source_chat_id,
                 source_message_id=source_message_id,
             )
-            .on_conflict_do_nothing(
-                constraint="uq_products_source_message",
-            )
+            .on_conflict_do_nothing()
             .returning(Product)
         )
 

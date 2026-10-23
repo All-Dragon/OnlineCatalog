@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+from urllib.parse import urlsplit, urlunsplit
 
 from aiogram import Bot
 
@@ -13,8 +14,26 @@ async def main() -> None:
     args = parser.parse_args()
 
     if args.action == "set":
-        if not args.url or not args.url.startswith("https://"):
-            parser.error("Provide an HTTPS webhook URL with --url")
+        if args.url is None:
+            mini_app_url = urlsplit(str(settings.mini_app_url))
+
+            args.url = urlunsplit(
+                (
+                    mini_app_url.scheme,
+                    mini_app_url.netloc,
+                    "/telegram/webhook",
+                    "",
+                    "",
+                ),
+            )
+
+        try:
+            webhook_url = urlsplit(args.url)
+        except ValueError:
+            parser.error("Provide a valid HTTPS webhook URL")
+
+        if webhook_url.scheme != "https" or not webhook_url.hostname:
+            parser.error("Provide a valid HTTPS webhook URL")
 
     async with Bot(
         token=settings.telegram_bot_token.get_secret_value(),

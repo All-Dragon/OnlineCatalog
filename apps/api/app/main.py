@@ -9,6 +9,7 @@ from app.core.config import settings
 from app.core.logging import configure_logging
 from app.core.s3 import create_s3_client, ensure_bucket
 from app.db.session import engine
+from app.routers.health import health_router
 from app.routers.products import products_router
 from app.api.exception_handlers import register_exception_handlers
 
@@ -43,3 +44,4 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(lifespan=lifespan)
 register_exception_handlers(app)
 app.include_router(products_router, prefix="/api/v1")
+app.include_router(health_router)

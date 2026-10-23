@@ -9,6 +9,7 @@ from httpx import AsyncClient, Timeout
 from app.clients.catalog import CatalogClient
 from app.core.config import settings
 from app.core.logging import configure_logging
+from app.routers.health import health_router
 from app.routers.webhook import webhook_router
 
 
@@ -47,3 +48,4 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(webhook_router)
+app.include_router(health_router)

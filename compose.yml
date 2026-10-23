@@ -51,8 +51,6 @@ services:
       API_LOG_DIR: /app/logs/api
       LOG_MAX_BYTES: ${LOG_MAX_BYTES:-10485760}
       LOG_MAX_FILES: ${LOG_MAX_FILES:-5}
-    ports:
-      - "127.0.0.1::8000"
     volumes:
       - api_logs:/app/logs/api
     depends_on:
@@ -78,8 +76,6 @@ services:
       BOT_LOG_DIR: /app/logs/bot
       LOG_MAX_BYTES: ${LOG_MAX_BYTES:-10485760}
       LOG_MAX_FILES: ${LOG_MAX_FILES:-5}
-    ports:
-      - "127.0.0.1::8001"
     volumes:
       - bot_logs:/app/logs/bot
     depends_on:
@@ -93,10 +89,22 @@ services:
         API_BASE_URL: http://api:8000
     environment:
       API_BASE_URL: http://api:8000
-    ports:
-      - "127.0.0.1::3000"
     depends_on:
       api:
+        condition: service_started
+
+  proxy:
+    image: nginx:1.30.6-alpine
+    ports:
+      - "127.0.0.1:${PROXY_HOST_PORT:-8080}:80"
+    volumes:
+      - ./apps/infra/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      api:
+        condition: service_started
+      bot:
+        condition: service_started
+      web:
         condition: service_started
 
 volumes:
